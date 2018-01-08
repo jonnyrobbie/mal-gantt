@@ -74,8 +74,8 @@ class GanttChart():
 		self.minTuple = list(self.currentTuple)
 		self.currentTime = list(time.gmtime())
 		if self.currentTuple[2] != 1:
-			#self.currentTuple[2] = 1
-			modTupByIndex(self.currentTuple, 2, 1)
+			self.currentTuple[2] = 1
+			#modTupByIndex(self.currentTuple, 2, 1)
 			if self.currentTuple[1] != 12:
 				self.currentTuple[1] = self.currentTuple[1] + 1
 				#modTupByIndex(self.currentTuple, 1, self.currentTuple[1] + 1)
