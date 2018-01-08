@@ -22,6 +22,7 @@ parser.add_argument("--bgcolour", help="Background colour.", default="#D7D6A5")
 parser.add_argument("--barcolour", help="Finished bar colour.", default="#458985")
 parser.add_argument("--dbarcolour", help="Dropped bar colour.", default="#DBA67B")
 parser.add_argument("--wbarcolour", help="Watching bar colour.", default="#7AC97B")
+parser.add_argument("--hbarcolour", help="On-Hold bar colour.", default="#8A8054")
 parser.add_argument("--textcolour", help="Text colour.", default="#074358")
 parser.add_argument("--glowcolour", help="Glow colour.", default="#80FFF8")
 parser.add_argument("--glow", help="Enable text glow.", action="store_true")
@@ -158,7 +159,7 @@ class ParseXML():
 					"un_start": False,
 					"un_finish": False}
 			self.animeList.append(self.animeItem)
-		self.animeList[:] = [anime for anime in self.animeList if (anime["status"]=="Completed" or anime["status"]=="Watching" or anime["status"]=="Dropped")]
+		self.animeList[:] = [anime for anime in self.animeList if (anime["status"]=="Completed" or anime["status"]=="Watching" or anime["status"]=="Dropped" or anime["status"]=="On-Hold")]
 
 		for anime in self.animeList:
 			if anime["date_finish"][0:4] == "0000":
@@ -182,7 +183,7 @@ class ParseXML():
 		for anime in self.animeList:
 			if anime["un_start"] == True:
 				anime["date_start"] = self.timeMin
-			if anime["un_finish"] == True and anime["status"] != "Watching":
+			if anime["un_finish"] == True and anime["status"] != "Watching" and anime["status"] != "On-Hold":
 				anime["date_finish"] = self.timeMin
 		self.animeDF = pd.DataFrame(self.animeList)
 		self.animeDF = self.animeDF.sort_values(by=["date_start", "date_finish", "name"])
@@ -217,6 +218,8 @@ class DrawChart():
 				self.colorBar = args.dbarcolour
 			elif anime["status"] == "Watching":
 				self.colorBar = args.wbarcolour
+			elif anime["status"] == "On-Hold":
+				self.colorBar = args.hbarcolour
 			else:
 				self.colorBar = args.barcolour
 			self.chart.addItem(anime["indx"]*self.height, round((timeConv(anime["date_start"]).getUnixtime() - timeConv(self.animeParse.timeMin).getUnixtime())/(3600*24)), round((timeConv(anime["date_finish"]).getUnixtime() - timeConv(anime["date_start"]).getUnixtime())/(3600*24)), text=anime["name"], barColor=self.colorBar, textColor=args.textcolour)
